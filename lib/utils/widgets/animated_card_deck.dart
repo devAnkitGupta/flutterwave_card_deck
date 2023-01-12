@@ -2,14 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutterwave_card_deck/utils/functions/animation_utils.dart';
 import 'package:flutterwave_card_deck/utils/widgets/two_animated_builders.dart';
-
 import 'atm_card.dart';
 
-class AnimatedCardDeck extends StatefulWidget {
-  const AnimatedCardDeck({
+class CardStack extends StatefulWidget {
+  const CardStack({
     Key key,
     @required this.cardsDetailsList,
-    this.scale, this.size,
+    this.scale,
+    this.size,
   }) : super(key: key);
 
   final List<ATMCardUIDetails> cardsDetailsList;
@@ -17,11 +17,10 @@ class AnimatedCardDeck extends StatefulWidget {
   final double size;
 
   @override
-  _AnimatedCardDeckState createState() => _AnimatedCardDeckState();
+  _CardStackState createState() => _CardStackState();
 }
 
-class _AnimatedCardDeckState extends State<AnimatedCardDeck>
-    with TickerProviderStateMixin {
+class _CardStackState extends State<CardStack> with TickerProviderStateMixin {
   AnimationController _moveController;
   AnimationController _shiftController;
 
@@ -57,7 +56,6 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck>
     _shiftController.reset();
     setState(() {
       isOut = false;
-      //Throw the first item to the end of the list
       widget.cardsDetailsList.add(widget.cardsDetailsList.removeAt(0));
     });
   }
@@ -73,11 +71,13 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck>
   build(BuildContext context) {
     int numberOfCards = widget.cardsDetailsList.length;
     return Container(
-      width:  widget.size ?? 150,
-      height: widget.size ?? 150,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: FittedBox(
-        child: TwoAnimatedBuilders(
-          animations: [_moveController, _shiftController],
+        child: AnimatedMotionBuilders(
+          animations: [
+            _moveController,
+            _shiftController,
+          ],
           builder: () {
             return Stack(
               children: List.generate(
@@ -86,33 +86,19 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck>
                   double multiplier = (numberOfCards + 1) - index.toDouble();
                   return Builder(
                     builder: (context) {
-                      var yRotate = getAnimValue(
-                          start: 0.5, end: 0.6, animation: _moveController);
-                      var xRotate = getAnimValue(
-                          start: -0.8, end: -0.1, animation: _moveController);
-                      var yTranslate = -300 * _moveController.value;
-
-                      //TOP CARD.
                       var topCardAnimDetails = ATMCardAnimationDetails(
                         move: multiplier,
-                        rotateX: xRotate,
-                        rotateY: yRotate,
-                        translateY: yTranslate,
                         index: index.toDouble(),
                       );
                       if (index == numberOfCards) {
                         return Opacity(
                           opacity: isOut ? 0 : 1,
-                          child: ATMCard(
+                          child: CreditCard(
                             animationDetails: topCardAnimDetails,
                             atmCardUIDetails: widget.cardsDetailsList.first,
                           ),
                         );
                       }
-
-                      //3d EFFECT CARD.
-                      //Index starts at 0 and ends at number of cards
-                      //Move starts at multiplier * 1.0 but ends at (n)
                       double moveEnd =
                           (numberOfCards + 1) - numberOfCards.toDouble();
                       double moveStart = multiplier;
@@ -134,21 +120,17 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck>
                                 animation: _moveController,
                               )
                             : numberOfCards * _moveController.value,
-                        rotateX: xRotate,
-                        rotateY: yRotate,
-                        translateY: yTranslate,
                       );
                       if (index == 0) {
                         return Opacity(
                           opacity: isOut ? 1 : 0,
-                          child: ATMCard(
+                          child: CreditCard(
                             animationDetails: _3DEffectCardAnimDetails,
                             atmCardUIDetails: widget.cardsDetailsList.first,
                           ),
                         );
                       }
 
-                      //OTHER CARDS.
                       var otherCardAnimDetails = ATMCardAnimationDetails(
                         move: getAnimValue(
                           start: multiplier,
@@ -167,7 +149,7 @@ class _AnimatedCardDeckState extends State<AnimatedCardDeck>
                           i--) {
                         leftDetails.add(widget.cardsDetailsList[i]);
                       }
-                      return ATMCard(
+                      return CreditCard(
                         animationDetails: otherCardAnimDetails,
                         atmCardUIDetails: leftDetails[index - 1],
                       );

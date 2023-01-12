@@ -13,57 +13,35 @@ class _PlaygroundPageState extends State<PlaygroundPage>
   List<ATMCardUIDetails> cardsDetailsList = [
     ATMCardUIDetails(
       cardIcon: CupertinoIcons.money_dollar_circle,
-      gradientColors: [Colors.indigo, Colors.purple],
+      color: Color(0xff02559A),
       cardName: "Dollar",
       cardOwner: "TIM SNEATH",
       cardPan: "1010967890181234",
     ),
     ATMCardUIDetails(
       cardIcon: CupertinoIcons.money_pound_circle,
-      gradientColors: [Colors.red, Colors.blue[700]],
+      color: Color(0xffF3192D),
       cardName: "Pound",
       cardOwner: "TIMILEHIN JEGEDE",
       cardPan: "1010967900181112",
     ),
     ATMCardUIDetails(
-      gradientColors: [Colors.pink, Colors.lime],
+      color: Color(0xff000000),
       cardName: "Bitcoin",
       cardIcon: CupertinoIcons.bitcoin_circle,
       cardOwner: "LETS4R",
       cardPan: "1010102412346789",
     ),
-    ATMCardUIDetails(
-      cardIcon: CupertinoIcons.money_euro_circle,
-      cardName: "Euro",
-      gradientColors: [
-        Colors.green,
-        Colors.cyan[700],
-      ],
-      cardOwner: "CHIZIARUHOMA OGBONDA",
-      cardPan: "1010113567390789",
-    ),
-    ATMCardUIDetails(
-      cardIcon: CupertinoIcons.money_yen_circle,
-      cardName: "Yen",
-      gradientColors: [Colors.blueGrey, Colors.brown],
-      cardPan: "1010345790908867",
-    ),
-    ATMCardUIDetails(
-        cardIcon: CupertinoIcons.money_yen_circle,
-        cardName: "Yen",
-        gradientColors: [Colors.orange, Colors.indigoAccent],
-        cardPan: "1010345790908867",
-        cardOwner: "WILSON WILSON"),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       body: Center(
-        child: AnimatedCardDeck(
+        child: CardStack(
           cardsDetailsList: cardsDetailsList,
-          size: MediaQuery.of(context).size.width / 4.5,
+          size: MediaQuery.of(context).size.width * 0.8,
         ),
       ),
     );
